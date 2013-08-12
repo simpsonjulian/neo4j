@@ -1,0 +1,76 @@
+require 'rbconfig'
+require 'net/http'
+require 'uri'
+
+directory 'target'
+
+platform = RbConfig::CONFIG["target_os"]
+version = ENV['VERSION']
+parent_dir = File.join(File.dirname(__FILE__), '..')
+
+EDITIONS=['community', 'advanced', 'enterprise']
+
+def connect_to_rest_api
+  uri = URI.parse("http://localhost:7474/db/data/")
+  #Net::HTTP.get_response(uri)
+  response = Net::HTTP.get(uri)
+  unless response.match(/neo4j_version" : "2.0-SNAPSHOT/)
+    raise "Couldn't find a Neo4j server in the following response: #{response}"
+  end
+end
+
+def tarball_on_darwin(edition, version)
+  artifact = "neo4j-#{edition}-#{version}-unix.tar.gz"
+  unpacked = "neo4j-#{edition}-#{version}"
+  neo_script = "./#{unpacked}/bin/neo4j"
+  message = nil
+  begin
+    cp artifact, 'target'
+    sh "cd target && tar -xf #{artifact}"
+    sh "cd target && #{neo_script} install"
+    sh "launchctl start org.neo4j.server.7474"
+    sleep 10
+    connect_to_rest_api()
+  rescue Exception => e
+    message = "Ooops, something happened: #{e.message}"
+  ensure
+    sh "launchctl stop org.neo4j.server.7474 || true"
+    sh "cd target && #{neo_script} remove"
+  end
+  raise message if message
+end
+
+def dpkg_on_linux(edition, version)
+  sh "sudo gdebi -n target/#{name}_#{version}.deb"
+  connect_to_rest_api
+  sh "dpkg -r #{name}"
+end
+
+task :tarballs => 'target' do
+  filespec = File.join(parent_dir, 'standalone', 'target', '*.tar.gz')
+  Dir.glob(filespec).each { |pkg| cp pkg, 'target' }
+end
+
+desc "Tests the start scripts on OSX, for all 3 editions"
+task :darwin => :tarballs do
+  EDITIONS.each do |edition|
+    tarball_on_darwin(edition, version)
+  end
+end
+
+task :debs => 'target' do
+  filespec = File.join(parent_dir, 'installer-linux', 'target', '*.deb')
+  Dir.glob(filespec).each { |pkg| cp pkg, 'target' }
+end
+
+task :linux => :debs do
+  sh "sudo aptitude install gdebi-core"
+
+  EDITIONS.each do |edition|
+    name = (edition == 'community') ? 'neo4j' : "#{neo4j}-#{edition}"
+    dpkg_on_linux(name, version)
+  end
+
+end
+
+task :default => platform.to_sym
