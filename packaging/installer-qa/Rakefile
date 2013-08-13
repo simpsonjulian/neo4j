@@ -46,9 +46,12 @@ def dpkg_on_linux(edition, version)
   sh "dpkg -r #{name}"
 end
 
+def file_spec(parent_dir, extension, mod = 'standalone')
+  File.join(parent_dir, mod, 'target', "*.#{extension}")
+end
+
 task :tarballs => 'target' do
-  filespec = File.join(parent_dir, 'standalone', 'target', '*.tar.gz')
-  Dir.glob(filespec).each { |pkg| cp pkg, 'target' }
+  Dir.glob(file_spec(parent_dir, 'tar.gz')).each { |pkg| cp pkg, 'target' }
 end
 
 desc "Tests the start scripts on OSX, for all 3 editions"
@@ -59,17 +62,25 @@ task :darwin => :tarballs do
 end
 
 task :debs => 'target' do
-  filespec = File.join(parent_dir, 'installer-linux', 'target', '*.deb')
-  Dir.glob(filespec).each { |pkg| cp pkg, 'target' }
+  Dir.glob(file_spec(parent_dir, 'deb', 'installer-linux')).each { |pkg| cp pkg, 'target' }
 end
 
+desc "Tests debian packages on ubuntu"
 task :linux => :debs do
-  sh "sudo aptitude install gdebi-core"
+  sh "sudo apt-get install -y gdebi-core"
 
   EDITIONS.each do |edition|
     name = (edition == 'community') ? 'neo4j' : "#{neo4j}-#{edition}"
     dpkg_on_linux(name, version)
   end
+
+end
+
+task :zips do
+  Dir.glob(file_spec(parent_dir, 'zip')).each { |pkg| cp pkg, 'target' }
+end
+
+task :windows => :zips do
 
 end
 
