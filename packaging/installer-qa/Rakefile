@@ -43,7 +43,7 @@ end
 def dpkg_on_linux(edition, version)
   sh "sudo gdebi -n target/#{name}_#{version}.deb"
   connect_to_rest_api
-  sh "dpkg -r #{name}"
+  sh "dpkg -r #{edition}"
 end
 
 def file_spec(parent_dir, extension, mod = 'standalone')
