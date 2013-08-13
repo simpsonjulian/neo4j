@@ -30,6 +30,7 @@
     <module>standalone</module>
     <module>qa</module>
     <module>neo4j-desktop</module>
+    <module>installer-qa</module>
   </modules>
 
   <licenses>
