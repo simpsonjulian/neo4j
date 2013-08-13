@@ -70,7 +70,7 @@ task :linux => :debs do
   sh "sudo apt-get install -y gdebi-core"
 
   EDITIONS.each do |edition|
-    name = (edition == 'community') ? 'neo4j' : "#{neo4j}-#{edition}"
+    name = edition == 'community' ? 'neo4j' : "neo4j-#{edition}"
     dpkg_on_linux(name, version)
   end
 
