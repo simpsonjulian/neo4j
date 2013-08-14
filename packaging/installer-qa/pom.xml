@@ -29,6 +29,14 @@
     <license-text.header>GPL-3-header.txt</license-text.header>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.neo4j</groupId>
+      <artifactId>installer-linux</artifactId>
+      <version>${neo4j.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
