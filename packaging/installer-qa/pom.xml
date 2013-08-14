@@ -27,8 +27,6 @@
     <short-name>installer-qa</short-name>
     <neo4j.version>2.0-SNAPSHOT</neo4j.version>
     <license-text.header>GPL-3-header.txt</license-text.header>
-    <gem.options></gem.options>
-    <required.gems></required.gems>
   </properties>
 
   <dependencies>

@@ -84,22 +84,19 @@ task :zips do
 end
 
 def unzip(file, destination)
-  Zip::ZipFile.open(file) { |zip_file|
-    zip_file.each { |file|
+  Zip::ZipFile.open(file) do |zip_file|
+    zip_file.each do |file|
       f_path=File.join(destination, file.name)
       FileUtils.mkdir_p(File.dirname(f_path))
       zip_file.extract(file, f_path) unless File.exist?(f_path)
-    }
-  }
+    end
+  end
 end
 
 task :windows => :zips do
-  unzip(file, destination)
   EDITIONS.each do |edition|
     unzip "target/neo4j-#{edition}-#{version}-windows.zip", "neo4j-#{edition}-#{version}"
   end
-
-
 end
 
 task :default => platform.to_sym
