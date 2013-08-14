@@ -27,6 +27,8 @@
     <short-name>installer-qa</short-name>
     <neo4j.version>2.0-SNAPSHOT</neo4j.version>
     <license-text.header>GPL-3-header.txt</license-text.header>
+    <gem.options></gem.options>
+    <required.gems></required.gems>
   </properties>
 
   <dependencies>
@@ -45,6 +47,18 @@
         <artifactId>jruby-rake-plugin</artifactId>
         <version>1.7.4</version>
         <executions>
+
+          <execution>
+            <id>install-gems</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>install-gems</goal>
+            </goals>
+            <configuration>
+              <gems>--no-rdoc --no-ri --user-install rubyzip</gems>
+            </configuration>
+          </execution>
+
           <execution>
             <id>run-rake-file</id>
             <phase>test</phase>
