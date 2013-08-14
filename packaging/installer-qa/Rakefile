@@ -41,7 +41,8 @@ def tarball_on_darwin(edition, version)
 end
 
 def dpkg_on_linux(edition, version)
-  sh "sudo gdebi -n target/#{edition}_#{version}_all.deb"
+  munged_version = version.sub(/\-/, '.')
+  sh "sudo gdebi -n target/#{edition}_#{munged_version}_all.deb"
   connect_to_rest_api
   sh "dpkg -r #{edition}"
 end
