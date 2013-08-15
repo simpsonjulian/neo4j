@@ -43,7 +43,7 @@ end
 
 def dpkg_on_linux(edition, version)
   munged_version = version.sub(/\-/, '.')
-  sh "sudo gdebi -n target/#{edition}_#{munged_version}_all.deb"
+  sh "sudo gdebi -n -o APT::Get::force-yes=1 -o APT::Get::Assume-Yes=1 target/#{edition}_#{munged_version}_all.deb"
   connect_to_rest_api
   sh "sudo dpkg -r #{edition}"
 end
@@ -70,7 +70,6 @@ end
 desc "Tests debian packages on ubuntu"
 task :linux => :debs do
   sh "sudo apt-get install -y gdebi-core"
-  sh "env|sort"
 
   EDITIONS.each do |edition|
     name = edition == 'community' ? 'neo4j' : "neo4j-#{edition}"
