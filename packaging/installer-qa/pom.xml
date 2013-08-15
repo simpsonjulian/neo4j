@@ -64,7 +64,7 @@
               <goal>rake</goal>
             </goals>
             <configuration>
-              <args>VERSION=${project.version}</args>
+              <args>VERSION=${project.version} --trace</args>
             </configuration>
           </execution>
         </executions>
