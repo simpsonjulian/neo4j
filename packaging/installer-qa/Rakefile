@@ -69,6 +69,10 @@ end
 
 desc "Tests debian packages on ubuntu"
 task :linux => :debs do
+  sh "sudo dpkg --purge neo4j"
+  sh "sudo dpkg --purge neo4j-advanced"
+  sh "sudo dpkg --purge neo4j-enterprise"
+
   sh "sudo apt-get install -y gdebi-core"
 
   EDITIONS.each do |edition|
