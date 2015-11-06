@@ -90,6 +90,7 @@ public class BigStoreIT implements RelationshipType
         return "BIG_TYPE";
     }
     
+    @Ignore
     @Test
     public void create4BPlusStuff() throws Exception
     {
@@ -102,8 +103,9 @@ public class BigStoreIT implements RelationshipType
         testHighIds( (long) pow( 2, 33 ), 1, 1000 );
     }
     
+    @Ignore
     @Test
-    public void createAndVerify32BitGraph() throws Exception
+    publiccreate4BPlusStuff void createAndVerify32BitGraph() throws Exception
     {
         createAndVerifyGraphStartingWithId( (long) pow( 2, 32 ), 400 );
     }
