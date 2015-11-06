@@ -105,7 +105,7 @@ public class BigStoreIT implements RelationshipType
     
     @Ignore
     @Test
-    publiccreate4BPlusStuff void createAndVerify32BitGraph() throws Exception
+    public void createAndVerify32BitGraph() throws Exception
     {
         createAndVerifyGraphStartingWithId( (long) pow( 2, 32 ), 400 );
     }
